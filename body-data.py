@@ -6,7 +6,14 @@
 input_weight_imperial = int(input("Please enter your weight in LBS: "))
 input_height_imperial = int(input("Please enter your height in INCHES: ")) 
 input_age = int(input("Please enter your age in YEARS: "))
-input_body_fat_percentage = int(input("Please enter your body fat % : ")) # optional
+
+input_body_fat_percentage = raw_input("If you know it, please enter your body fat % (if not, press enter): ")
+if not input_body_fat_percentage:
+   input_body_fat_percentage = None
+
+# input_body_fat_percentage = int(input("Please enter your body fat % : ") or "0" )  # optional
+
+
 # input physical activity factor (PAF) [Sedentary, Lightly Active, Moderately Active, Very Active, Extremely Active] 
 # input body type [ectomorph - thin, mesomorph - athletic, endomorph - heavy] 
 # input gender [female, male]
@@ -23,11 +30,12 @@ input_height_metric = input_height_imperial * 2.54
 
 # this calculation can be displayed as-is and does not need conversion since final result is in calories rather than a specific metric/imperial unit
 output_rmr_metric_default = ( input_weight_metric*13.75 ) + ( input_height_metric*5 ) - ( input_age*6.76 ) + 66
-#rmr calculation based on body fat input as well
-output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * input_weight_metric ) / 100 ) * 21.6 + 370
-    
 print("Men RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
+#rmr calculation based on body fat input as well
+if input_body_fat_percentage is not None:
+    output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * input_weight_metric ) / 100 ) * 21.6 + 370
+    print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
+
 
 
 
@@ -131,7 +139,6 @@ this test case will be an extremely active individual, using the following two v
 output_extremely_paf_metric_default
 output_extremely_paf_metric_body_fat
 Keep in mind that this variable should be different depending on inputted activity level.
-
 Our second assumption is that this individual's DGCI (daily goal caloric intake) 
 is extreme fat loss, so we'll use the following two variables:
 output_dgci_burn_extreme_metric_default
@@ -165,7 +172,6 @@ this test case will be an extremely active individual (PAF = physical activity f
 output_extremely_paf_metric_default
 output_extremely_paf_metric_body_fat
 Keep in mind that this variable should be different depending on inputted activity level.
-
 Our second assumption is that this individual's DGCI (daily goal caloric intake) 
 is extreme fat loss, so we'll use the following two variables:
 output_dgci_burn_extreme_metric_default
@@ -213,5 +219,4 @@ print("Men naturally heavy MMR calculated without user-input body fat are " + st
 #two calculations - minimum (min) and maximum (max) water you should drink in fluid oz -- results are in fluid oz 
 output_rwi_min = input_weight_metric * .5
 output_rwi_max = input_weight_metric * .8 
-
 
