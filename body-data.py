@@ -4,10 +4,15 @@
 ''' INPUTS (assuming imperial inputs) '''
 
 
-input_gender = str(raw_input("Please enter your gender as 'MAN' or 'WOMAN' and press enter: "))
-input_weight_imperial = int(input("Please enter your weight in POUNDS and press enter: "))
-input_height_imperial = int(input("Please enter your height in INCHES and press enter: ")) 
-input_age = int(input("Please enter your age in YEARS and press enter: "))
+gender = str(raw_input("Please enter your gender as 'MAN' or 'WOMAN' and press enter: ")).upper()
+while gender.upper() not in ("MAN", "WOMAN"):
+    print('Sorry, but you need to choose "man" or "woman"... Try Again')
+    gender = str(raw_input("Please enter your gender as 'MAN' or 'WOMAN' and press enter: ")).upper()
+
+
+weight = int(input("Please enter your weight in POUNDS and press enter: ")) / 2.2
+height = int(input("Please enter your height in INCHES and press enter: ")) * 2.54
+age = int(input("Please enter your age in YEARS and press enter: "))
 
 input_body_fat_percentage = raw_input("If you know it, please enter your body fat % (if not, press enter): ")
 if input_body_fat_percentage:
@@ -15,20 +20,8 @@ if input_body_fat_percentage:
 if not input_body_fat_percentage:
     input_body_fat_percentage = None
 
-if not input_gender:
-    print('Sorry But You DID NOT Choose an available option... Try Again')
 
-
-
-# input physical activity factor (PAF) [Sedentary, Lightly Active, Moderately Active, Very Active, Extremely Active] 
-# input body type [ectomorph - thin, mesomorph - athletic, endomorph - heavy] 
-# input gender [female, male]
-
-''' CONVERSION (from here on out, everything is calculated using metric values) '''
-# if input is imperial, convert to metric -- everything can stay in metric since outputs are in calories and fluid oz 
-
-input_weight_metric = input_weight_imperial / 2.2
-input_height_metric = input_height_imperial * 2.54
+# input_paf = str(raw_input("Please enter your activity level by typing one of the following options: 'Sedentary' 'Lightly Active' 'Moderately Active' 'Very Active' 'Extremely Active': "))
 
 
 ''' Calculating Thermal Effect of Food (calories burned from digestion) TEF '''
@@ -38,24 +31,23 @@ def calcTEF(rmr):
 
 ''' Calculating Resting Metabolic Rate RMR '''
 def calcRMR():
+    print("entering RMR cacl")
     if input_body_fat_percentage is None:
-        if input_gender == "MAN":
+        if gender == "MAN":
             # print("YOU ARE A MAN")
-            output_rmr_metric_default = ( input_weight_metric*13.75 ) + ( input_height_metric*5 ) - ( input_age*6.76 ) + 66
+            output_rmr_metric_default = ( weight*13.75 ) + ( height*5 ) - ( age*6.76 ) + 66
             print("Men RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-        if input_gender == "WOMAN":
-            print("YOU ARE A WOMAN")
-            output_rmr_metric_default = ( input_weight_metric*9.56 ) + ( input_height_metric*1.85 ) - ( input_age*4.68 ) + 655
+            calcTEF(output_rmr_metric_default)
+        if gender == "WOMAN":
+            # print("YOU ARE A WOMAN")
+            output_rmr_metric_default = ( weight*9.56 ) + ( height*1.85 ) - ( age*4.68 ) + 655
             print("Female RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-            
-        else:
-            print("Unable to calculate due to ambiguous gender")
-        calcTEF(output_rmr_metric_default)
+            calcTEF(output_rmr_metric_default)
     if input_body_fat_percentage is not None:
-        output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * input_weight_metric ) / 100 ) * 21.6 + 370
-        if input_gender == "MAN":
+        output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * weight ) / 100 ) * 21.6 + 370
+        if gender == "MAN":
             print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
-        if input_gender == "WOMAN":
+        if gender == "WOMAN":
             print("Female RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
         calcTEF(output_rmr_metric_body_fat)
 
@@ -68,11 +60,11 @@ calcBodyData()
 
 
 # this calculation can be displayed as-is and does not need conversion since final result is in calories rather than a specific metric/imperial unit
-output_rmr_metric_default = ( input_weight_metric*13.75 ) + ( input_height_metric*5 ) - ( input_age*6.76 ) + 66
+output_rmr_metric_default = ( weight*13.75 ) + ( height*5 ) - ( age*6.76 ) + 66
 print("Men RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
 #rmr calculation based on body fat input as well
 if input_body_fat_percentage is not None:
-    output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * input_weight_metric ) / 100 ) * 21.6 + 370
+    output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * weight ) / 100 ) * 21.6 + 370
     print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
     output_tef_metric_body_fat = output_rmr_metric_body_fat * .01
     print ("Men TEF calculated WITH user-input body fat is " + str(output_tef_metric_body_fat) + " calories.")
@@ -263,6 +255,6 @@ print("Men naturally heavy MMR calculated without user-input body fat are " + st
 
 ''' OUTPUT Recommended Water Intake (RWI) ''' 
 #two calculations - minimum (min) and maximum (max) water you should drink in fluid oz -- results are in fluid oz 
-output_rwi_min = input_weight_metric * .5
-output_rwi_max = input_weight_metric * .8 
+output_rwi_min = weight * .5
+output_rwi_max = weight * .8 
 
