@@ -139,21 +139,26 @@ output_dgci_burn_extreme_metric_body_fat
 '''
 #the following two calculations are not displayed -- they are use to calculate the low and high margin of error (MOE)
 moe_metric_default = output_dgci_burn_extreme_metric_default * .15 
-moe_metric_body_fat = output_dgci_burn_extreme_metric_body_fat * .15 
+if input_body_fat_percentage is not None:
+    moe_metric_body_fat = output_dgci_burn_extreme_metric_body_fat * .15 
 
 #high end calorie intake margin of error (high MOE) -- results are in calories 
 output_moe_high_metric_default = output_dgci_burn_extreme_metric_default + moe_metric_default
-output_moe_high_metric_body_fat = output_dgci_burn_extreme_metric_body_fat + moe_metric_body_fat
+if input_body_fat_percentage is not None:
+    output_moe_high_metric_body_fat = output_dgci_burn_extreme_metric_body_fat + moe_metric_body_fat
+    print("Men high MOE calculated WITH user-input body fat is " + str(output_moe_high_metric_body_fat) + " calories")
+
 
 #low end calorie intake margin of error (low MOE) -- results are in calories 
 output_moe_low_metric_default = output_dgci_burn_extreme_metric_default - moe_metric_default
-output_moe_low_metric_body_fat = output_dgci_burn_extreme_metric_body_fat - moe_metric_body_fat
+if input_body_fat_percentage is not None:
+    output_moe_low_metric_body_fat = output_dgci_burn_extreme_metric_body_fat - moe_metric_body_fat
+    print("Men low MOE calculated WITH user-input body fat is " + str(output_moe_low_metric_body_fat) + " calories")
+
 
 print("Men high MOE calculated without user-input body fat is " + str(output_moe_high_metric_default) + " calories")
-print("Men high MOE calculated WITH user-input body fat is " + str(output_moe_high_metric_body_fat) + " calories")
 
 print("Men low MOE calculated without user-input body fat is " + str(output_moe_low_metric_default) + " calories")
-print("Men low MOE calculated WITH user-input body fat is " + str(output_moe_low_metric_body_fat) + " calories")
 
 
 
@@ -173,35 +178,44 @@ output_dgci_burn_extreme_metric_body_fat
 #Ectomorph Macros: (Naturally Thinner Body Type/Frame) (ecto) -- results are in grams of [protein, fat, carbs] / day
 #protein
 output_mmr_ecto_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.25 ) / 4
-output_mmr_ecto_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_ecto_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
 #carb
 output_mmr_ecto_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.55 ) / 4
-output_mmr_ecto_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.55 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_ecto_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.55 ) / 4
 #fat
 output_mmr_ecto_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.2 ) / 9
-output_mmr_ecto_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.2 ) / 9
+if input_body_fat_percentage is not None:
+    output_mmr_ecto_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.2 ) / 9
 
 #Mesomorph Macros: (Naturally Proportional/Athletic Body Type/Frame) (meso) -- results are in grams of [protein, fat, carbs] / day
 #protein
 output_mmr_meso_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.3 ) / 4
-output_mmr_meso_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_meso_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 4
 #carb
 output_mmr_meso_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.4 ) / 4
-output_mmr_meso_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_meso_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 4
 #fat
 output_mmr_meso_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.3 ) / 9
-output_mmr_meso_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 9
+if input_body_fat_percentage is not None:
+    output_mmr_meso_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 9
 
 #Endomorph Macros: (Naturally Heavy Body Type/Frame) (endo) -- results are in grams of [protein, fat, carbs] / day 
 #protein
 output_mmr_endo_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.35 ) / 4
-output_mmr_endo_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.35 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_endo_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.35 ) / 4
 #carb
 output_mmr_endo_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.25 ) / 4
-output_mmr_endo_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
+if input_body_fat_percentage is not None:
+    output_mmr_endo_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
 #fat
 output_mmr_endo_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.4 ) / 9
-output_mmr_endo_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 9
+if input_body_fat_percentage is not None:
+    output_mmr_endo_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 9
 
 print("Men naturally thin MMR calculated without user-input body fat are " + str(output_mmr_ecto_protein_metric_default) + " grams protein " + str(output_mmr_ecto_carb_metric_default) + " grams carbs " + str(output_mmr_ecto_fat_metric_default) + " grams fat.") 
 print("Men naturally proportional MMR calculated without user-input body fat are " + str(output_mmr_meso_protein_metric_default) + " grams protein " + str(output_mmr_meso_carb_metric_default) + " grams carbs " + str(output_mmr_meso_fat_metric_default) + " grams fat.") 
