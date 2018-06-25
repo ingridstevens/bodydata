@@ -1,260 +1,87 @@
-# NUTRITION CALCULATOR FOR MEN #
-
-
 ''' INPUTS (assuming imperial inputs) '''
-
 
 gender = str(raw_input("Please enter your gender as 'MAN' or 'WOMAN' and press enter: ")).upper()
 while gender.upper() not in ("MAN", "WOMAN"):
-    print('Sorry, but you need to choose "man" or "woman"... Try Again')
+    print('    >> ERROR: Sorry, but you need to choose "man" or "woman"... Try Again')
     gender = str(raw_input("Please enter your gender as 'MAN' or 'WOMAN' and press enter: ")).upper()
-
 
 weight = int(input("Please enter your weight in POUNDS and press enter: ")) / 2.2
 height = int(input("Please enter your height in INCHES and press enter: ")) * 2.54
 age = int(input("Please enter your age in YEARS and press enter: "))
 
-input_body_fat_percentage = raw_input("If you know it, please enter your body fat % (if not, press enter): ")
-if input_body_fat_percentage:
-    input_body_fat_percentage = int(input_body_fat_percentage)
-if not input_body_fat_percentage:
-    input_body_fat_percentage = None
+body_fat_percentage = raw_input("If you know it, please enter your body fat % (if not, press enter): ")
+if body_fat_percentage:
+    body_fat_percentage = int(body_fat_percentage)
+if not body_fat_percentage:
+    body_fat_percentage = None
 
-
-# input_paf = str(raw_input("Please enter your activity level by typing one of the following options: 'Sedentary' 'Lightly Active' 'Moderately Active' 'Very Active' 'Extremely Active': "))
-
+activity_level = str(raw_input("Please enter your activity level by typing one of the following options: 'Sedentary' 'Lightly Active' 'Moderately Active' 'Very Active' 'Extremely Active': ")).upper()
 
 ''' Calculating Thermal Effect of Food (calories burned from digestion) TEF '''
 def calcTEF(rmr):
-    output_tef = rmr * .01
-    print("TEF (Thermal Effect of Food): " + str(output_tef) + " -- that's how many calories you burn just by digesting your food!\n")
+    tef = rmr * .01
+    return tef
+
+''' Calculating Physical Activity Factor PAF '''
+def calcPAF(rmr):
+    if activity_level == "SEDENTARY":
+        paf = (rmr * 1.2) - rmr
+    if activity_level == "LIGHTLY ACTIVE":
+        paf = (rmr * 1.375) - rmr
+    if activity_level == "MODERATELY ACTIVE":
+        paf = (rmr * 1.55) - rmr
+    if activity_level == "VERY ACTIVE":
+        paf = (rmr * 1.725) - rmr
+    if activity_level == "EXTREMELY ACTIVE":
+        paf = (rmr * 1.9) - rmr
+    return paf 
 
 ''' Calculating Resting Metabolic Rate RMR '''
 def calcRMR():
-    print("entering RMR cacl")
-    if input_body_fat_percentage is None:
+    if body_fat_percentage is None:
         if gender == "MAN":
-            # print("YOU ARE A MAN")
-            output_rmr_metric_default = ( weight*13.75 ) + ( height*5 ) - ( age*6.76 ) + 66
-            print("Men RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-            calcTEF(output_rmr_metric_default)
+            rmr = ( weight*13.75 ) + ( height*5 ) - ( age*6.76 ) + 66
+            calcTEF(rmr)
+            calcPAF(rmr)
         if gender == "WOMAN":
-            # print("YOU ARE A WOMAN")
-            output_rmr_metric_default = ( weight*9.56 ) + ( height*1.85 ) - ( age*4.68 ) + 655
-            print("Female RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-            calcTEF(output_rmr_metric_default)
-    if input_body_fat_percentage is not None:
-        output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * weight ) / 100 ) * 21.6 + 370
-        if gender == "MAN":
-            print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
-        if gender == "WOMAN":
-            print("Female RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
-        calcTEF(output_rmr_metric_body_fat)
+            rmr = ( weight*9.56 ) + ( height*1.85 ) - ( age*4.68 ) + 655
+            calcTEF(rmr)
+            calcPAF(rmr)
+    if body_fat_percentage is not None:
+        rmr =  ( ( (100 - body_fat_percentage) * weight ) / 100 ) * 21.6 + 370
+        calcTEF(rmr)
+        calcPAF(rmr)
+    return rmr
 
+''' Calculating Total Daily Energy Expenditure '''
+def calcTDEE():
+    rmr = calcRMR()
+    paf = calcPAF(rmr)
+    tef = calcTEF(rmr)
+    tdee = rmr + paf + tef 
+    return tdee
 
+''' Calculating Recommended Water Intake '''
+def calcWaterIntake():
+    min = weight*.5
+    max = weight*.8 
+    water_intake = ("You should drink a total of " +str(min) + " oz min and " +str(max)+" oz max of water each day")
+    return water_intake
 
+def printResults():
+    rmr = calcRMR()
+    print("Your Resting Metabolic Rate is " + str(rmr) + " calories.\n")
+    paf = calcPAF(rmr)
+    print("Because you are " + str(activity_level) + " your Physical Activity Calorie Burn is: " + str(paf) + "\n")
+    tef = calcTEF(rmr)
+    print("TEF (Thermal Effect of Food): " + str(tef) + " -- that's how many calories you burn just by digesting your food!\n")
+    tdee = calcTDEE()
+    print("Your total daily calorie expenditure is: " + str(tdee) +"\n")
+    water = calcWaterIntake()
+    print water
 
 def calcBodyData():
-    calcRMR()
+    print("\n")
+    printResults()
 calcBodyData()
-
-
-# this calculation can be displayed as-is and does not need conversion since final result is in calories rather than a specific metric/imperial unit
-output_rmr_metric_default = ( weight*13.75 ) + ( height*5 ) - ( age*6.76 ) + 66
-print("Men RMR calculated without user-input body fat is " + str(output_rmr_metric_default) + " calories.")
-#rmr calculation based on body fat input as well
-if input_body_fat_percentage is not None:
-    output_rmr_metric_body_fat =  ( ( (100 - input_body_fat_percentage) * weight ) / 100 ) * 21.6 + 370
-    print("Men RMR calculated WITH user-input body fat is " + str(output_rmr_metric_body_fat) + " calories.")
-    output_tef_metric_body_fat = output_rmr_metric_body_fat * .01
-    print ("Men TEF calculated WITH user-input body fat is " + str(output_tef_metric_body_fat) + " calories.")
-    output_sedentary_paf_metric_body_fat = ( output_rmr_metric_body_fat * 1.2 ) - output_rmr_metric_body_fat
-    print ("Men Sedentary PAF calculated WITH user-input body fat is " + str(output_sedentary_paf_metric_body_fat) + " Physical Activity Calories." )
-    output_light_paf_metric_body_fat = ( output_rmr_metric_body_fat * 1.375 ) - output_rmr_metric_body_fat
-    print ("Men Light PAF calculated WITH user-input body fat is " + str(output_light_paf_metric_body_fat) + " Physical Activity Calories." )
-    output_moderate_paf_metric_body_fat = ( output_rmr_metric_body_fat * 1.55 ) - output_rmr_metric_body_fat
-    print ("Men Moderate PAF calculated WITH user-input body fat is " + str(output_moderate_paf_metric_body_fat) + " Physical Activity Calories." )
-    output_very_paf_metric_body_fat = ( output_rmr_metric_body_fat * 1.725 ) - output_rmr_metric_body_fat
-    print ("Men Very Active PAF calculated WITH user-input body fat is " + str(output_very_paf_metric_body_fat) + " Physical Activity Calories." )
-    output_extremely_paf_metric_body_fat = ( output_rmr_metric_body_fat * 1.9 ) - output_rmr_metric_body_fat
-    print ("Men Extremely Active PAF calculated WITH user-input body fat is " + str(output_extremely_paf_metric_body_fat) + " Physical Activity Calories." )
-    output_tdee_metric_body_fat = output_rmr_metric_body_fat + output_tef_metric_body_fat + output_extremely_paf_metric_body_fat
-    output_dgci_build_aggressive_metric_body_fat = output_tdee_metric_body_fat + 500
-    output_dgci_build_moderate_metric_body_fat = output_tdee_metric_body_fat + 250
-    output_dgci_burn_moderate_metric_body_fat = output_tdee_metric_body_fat - 500
-    output_dgci_burn_agressive_metric_body_fat = output_tdee_metric_body_fat - 750
-    output_dgci_burn_extreme_metric_body_fat = output_tdee_metric_body_fat - 1000
-
-
-
-
-''' OUTPUT Thermal Effect of Food (calories burned from digestion) TEF '''
-
-output_tef_metric_default = output_rmr_metric_default * .01
-print ("Men TEF calculated without user-input body fat is " + str(output_tef_metric_default) + " calories.")
-
-
-''' OUTPUT physical activity factor PAF ''' 
-# this calculation depends on user input of physical activity factor (PAF)
-
-# sedentary -- results are in calories
-output_sedentary_paf_metric_default = ( output_rmr_metric_default * 1.2 ) - output_rmr_metric_default
-print ("Men Sedentary PAF calculated without user-input body fat is " + str(output_sedentary_paf_metric_default) + " Physical Activity Calories." )
-
-output_light_paf_metric_default = ( output_rmr_metric_default * 1.375 ) - output_rmr_metric_default
-print ("Men Light PAF calculated without user-input body fat is " + str(output_light_paf_metric_default) + " Physical Activity Calories." )
-
-# moderately active -- results are in calories 
-output_moderate_paf_metric_default = ( output_rmr_metric_default * 1.55 ) - output_rmr_metric_default
-print ("Men Moderate PAF calculated without user-input body fat is " + str(output_moderate_paf_metric_default) + " Physical Activity Calories." )
-
-# very active -- results are in calories 
-output_very_paf_metric_default = ( output_rmr_metric_default * 1.725 ) - output_rmr_metric_default
-
-print ("Men Very Active PAF calculated without user-input body fat is " + str(output_very_paf_metric_default) + " Physical Activity Calories." )
-
-# extremely active -- results are in calories 
-output_extremely_paf_metric_default = ( output_rmr_metric_default * 1.9 ) - output_rmr_metric_default
-
-print ("Men Extremely Active PAF calculated without user-input body fat is " + str(output_extremely_paf_metric_default) + " Physical Activity Calories." )
-
-
-
-''' OUTPUT Total Daily Energy Expenditure in calories TDEE '''
-''' 
-ASSUMPTION: to avoid displaying so many variations based on activity levels,
-this test case will be an extremely active individual, using the following two variables: 
-output_extremely_paf_metric_default
-output_extremely_paf_metric_body_fat
-Keep in mind that this variable should be different depending on inputted activity level.
-'''
-#formula is different depending on (a) if body fat was entered and (b) what activity level is -- results are in calories
-output_tdee_metric_default = output_rmr_metric_default + output_tef_metric_default + output_extremely_paf_metric_default
-
-
-
-''' OUTPUT Daily Goal Caloric Intake -- calorie intake adjustments based off client goal DGCI '''
-
-# agressive muscle growth (build 1 lb/week | build .45 kg/week) -- results are in calories
-output_dgci_build_aggressive_metric_default = output_tdee_metric_default + 500 
-
-# moderate muscle growth (build 0.5 lb/week | build .23 kg/week) -- results are in calories
-output_dgci_build_moderate_metric_default = output_tdee_metric_default + 250 
-
-# maintain -- results are in calories
-# output_tdee_metric_default
-# output_tdee_metric_body_fat
-
-# moderate burn fat (burn 1 lb/ week | .45 kg / week) -- results are in calories
-output_dgci_burn_moderate_metric_default = output_tdee_metric_default - 500 
-
-# agressive burn fat (burn 1.5 lb/ week | .68 kg / week) -- results are in calories
-output_dgci_burn_agressive_metric_default = output_tdee_metric_default - 750 
-
-# extreme burn fat (burn 2 lb/ week | .91 kg / week) -- results are in calories
-output_dgci_burn_extreme_metric_default = output_tdee_metric_default - 1000 
-
-
-
-''' OUTPUT Margin Of Error Range of Calories MOE '''
-''' 
-ASSUMPTION: to avoid displaying so many variations based on activity levels,
-this test case will be an extremely active individual, using the following two variables: 
-output_extremely_paf_metric_default
-output_extremely_paf_metric_body_fat
-Keep in mind that this variable should be different depending on inputted activity level.
-Our second assumption is that this individual's DGCI (daily goal caloric intake) 
-is extreme fat loss, so we'll use the following two variables:
-output_dgci_burn_extreme_metric_default
-output_dgci_burn_extreme_metric_body_fat
-'''
-#the following two calculations are not displayed -- they are use to calculate the low and high margin of error (MOE)
-moe_metric_default = output_dgci_burn_extreme_metric_default * .15 
-if input_body_fat_percentage is not None:
-    moe_metric_body_fat = output_dgci_burn_extreme_metric_body_fat * .15 
-
-#high end calorie intake margin of error (high MOE) -- results are in calories 
-output_moe_high_metric_default = output_dgci_burn_extreme_metric_default + moe_metric_default
-if input_body_fat_percentage is not None:
-    output_moe_high_metric_body_fat = output_dgci_burn_extreme_metric_body_fat + moe_metric_body_fat
-    print("Men high MOE calculated WITH user-input body fat is " + str(output_moe_high_metric_body_fat) + " calories")
-
-
-#low end calorie intake margin of error (low MOE) -- results are in calories 
-output_moe_low_metric_default = output_dgci_burn_extreme_metric_default - moe_metric_default
-if input_body_fat_percentage is not None:
-    output_moe_low_metric_body_fat = output_dgci_burn_extreme_metric_body_fat - moe_metric_body_fat
-    print("Men low MOE calculated WITH user-input body fat is " + str(output_moe_low_metric_body_fat) + " calories")
-
-
-print("Men high MOE calculated without user-input body fat is " + str(output_moe_high_metric_default) + " calories")
-
-print("Men low MOE calculated without user-input body fat is " + str(output_moe_low_metric_default) + " calories")
-
-
-
-''' OUTPUT Macronutrient Ratio Recommendations (MRR) '''
-''' 
-ASSUMPTIONS: 
-to avoid displaying so many variations based on activity levels,
-this test case will be an extremely active individual (PAF = physical activity factor), using the following two variables: 
-output_extremely_paf_metric_default
-output_extremely_paf_metric_body_fat
-Keep in mind that this variable should be different depending on inputted activity level.
-Our second assumption is that this individual's DGCI (daily goal caloric intake) 
-is extreme fat loss, so we'll use the following two variables:
-output_dgci_burn_extreme_metric_default
-output_dgci_burn_extreme_metric_body_fat
-'''
-#Ectomorph Macros: (Naturally Thinner Body Type/Frame) (ecto) -- results are in grams of [protein, fat, carbs] / day
-#protein
-output_mmr_ecto_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.25 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_ecto_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
-#carb
-output_mmr_ecto_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.55 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_ecto_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.55 ) / 4
-#fat
-output_mmr_ecto_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.2 ) / 9
-if input_body_fat_percentage is not None:
-    output_mmr_ecto_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.2 ) / 9
-
-#Mesomorph Macros: (Naturally Proportional/Athletic Body Type/Frame) (meso) -- results are in grams of [protein, fat, carbs] / day
-#protein
-output_mmr_meso_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.3 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_meso_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 4
-#carb
-output_mmr_meso_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.4 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_meso_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 4
-#fat
-output_mmr_meso_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.3 ) / 9
-if input_body_fat_percentage is not None:
-    output_mmr_meso_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.3 ) / 9
-
-#Endomorph Macros: (Naturally Heavy Body Type/Frame) (endo) -- results are in grams of [protein, fat, carbs] / day 
-#protein
-output_mmr_endo_protein_metric_default = ( output_dgci_burn_extreme_metric_default *.35 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_endo_protein_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.35 ) / 4
-#carb
-output_mmr_endo_carb_metric_default = ( output_dgci_burn_extreme_metric_default *.25 ) / 4
-if input_body_fat_percentage is not None:
-    output_mmr_endo_carb_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.25 ) / 4
-#fat
-output_mmr_endo_fat_metric_default = ( output_dgci_burn_extreme_metric_default *.4 ) / 9
-if input_body_fat_percentage is not None:
-    output_mmr_endo_fat_metric_body_fat = ( output_dgci_burn_extreme_metric_body_fat *.4 ) / 9
-
-print("Men naturally thin MMR calculated without user-input body fat are " + str(output_mmr_ecto_protein_metric_default) + " grams protein " + str(output_mmr_ecto_carb_metric_default) + " grams carbs " + str(output_mmr_ecto_fat_metric_default) + " grams fat.") 
-print("Men naturally proportional MMR calculated without user-input body fat are " + str(output_mmr_meso_protein_metric_default) + " grams protein " + str(output_mmr_meso_carb_metric_default) + " grams carbs " + str(output_mmr_meso_fat_metric_default) + " grams fat.") 
-print("Men naturally heavy MMR calculated without user-input body fat are " + str(output_mmr_endo_protein_metric_default) + " grams protein " + str(output_mmr_endo_carb_metric_default) + " grams carbs " + str(output_mmr_endo_fat_metric_default) + " grams fat.") 
-
-
-''' OUTPUT Recommended Water Intake (RWI) ''' 
-#two calculations - minimum (min) and maximum (max) water you should drink in fluid oz -- results are in fluid oz 
-output_rwi_min = weight * .5
-output_rwi_max = weight * .8 
 
