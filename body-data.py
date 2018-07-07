@@ -1,30 +1,44 @@
+
+# def enum(**named_values):
+#      return type('Enum', (), named_values)
+
+
+# Gender = enum(MALE='male', FEMALE='female', N_A='n/a')
+
+
+
 ''' INPUTS (assuming imperial inputs) '''
 print("BODY DATA CALCULATOR \n    >> You will be asked several questions about your gender, weight, height, age, and activity level. \nBased on your entries, the program will calculate results for you about your resting metabolic rate (RMR), \ntotal calorie expenditure, thermal effect of food, and how much water you should be drinking. \n Please note that we respect your privacy, this data is not saved.  \n")
 
 gender = 'None'
 
+
+# while gender not in (Gender.MALE, Gender.FEMALE, Gender.N_A):
+#     gender = str(raw_input("What's Your Gender? \n    >> Please type your gender as 'MALE' or 'FEMALE' and press RETURN: "))
+    # print checkGender()
+
+
+
 def checkGender():
     if gender.upper()[0] == "M": 
-        if gender.upper() == "MAN":
+        if gender.upper() == "MAN" or gender.upper() == "MALE":
             return 0
         else:
             return 'You entered ' + str(gender) + ' but I think you meant \'MAN\'...is that correct?'
     if gender.upper()[0] == "W":
-        if gender.upper() == "WOMAN":
+        if gender.upper() == "WOMAN" or gender.upper() == "FEMALE":
             return 0
         else:
             return 'You entered ' + str(gender) + ' but I think you meant \'WOMAN\'...is that correct?'
     else:
         return '    >> ERROR: Sorry, but you need to choose "man" or "woman"... Try Again'
 
+
 while checkGender() is not 0:
     gender = str(raw_input("What's Your Gender? \n    >> Please type your gender as 'MAN' or 'WOMAN' and press RETURN: "))
     print checkGender()
 
-
 raw_weight = 1
-
-# raw_weight = int(input("What's Your Weight? \n    >> Please type your weight in POUNDS and press RETURN: ")) 
 
 def checkWeight():
     if (raw_weight > 40) and (raw_weight < 400):
@@ -39,8 +53,6 @@ while checkWeight() is not 0:
 
 raw_height = 1
 
-# raw_height = int(input("What's Your Height? \n    >> Please type your height in INCHES and press RETURN: ")) 
-
 def checkHeight():
     if (raw_height > 40) and (raw_height < 96):
         return 0
@@ -50,9 +62,6 @@ def checkHeight():
 while checkHeight() is not 0:
     raw_height = int(input("What's Your Height? \n    >> Please type your height in INCHES and press RETURN: ")) 
     print checkHeight()
-
-# create a new type that is bounded on both sides from 50 to 700
-
 
 def calcBMI():
     bmi = ((raw_weight /2.2) / (raw_height * 0.0254)**2)
@@ -90,7 +99,6 @@ if not body_fat_percentage:
     body_fat_percentage = None
 
 activity_level = str(raw_input("How active are you? \n    >> Please type your activity level by typing one of the following options: \n    'Sedentary' 'Lightly Active' 'Moderately Active' 'Very Active' 'Extremely Active': ")).upper()
-
 
 
 ''' Calculating Thermal Effect of Food (calories burned from digestion) TEF '''
